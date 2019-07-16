@@ -1,8 +1,5 @@
 <?php
 
-use spitfire\Model;
-use spitfire\storage\database\Schema;
-
 /* 
  * The MIT License
  *
@@ -27,19 +24,45 @@ use spitfire\storage\database\Schema;
  * THE SOFTWARE.
  */
 
-class AchievementModel extends Model 
+use spitfire\Model;
+use spitfire\storage\database\Schema;
+
+class ScoreModel extends Model
 {
+	
 	/**
 	 * 
 	 * @param Schema $schema
 	 * @return Schema
 	 */
 	public function definitions(Schema $schema) {
-		$schema->badge = new Reference(BadgeModel::class);
-		$schema->user = new Reference(UserModel::class);
 		
+		$schema->interaction = new Reference(InteractionModel::class);
+		
+		/*
+		 * These are denormalized views to increment the performance of the queries
+		 * on this model.
+		 */
+		$schema->user = new Reference(UserModel::class);
+		$schema->rule = new Reference(RewardModel::class);
+		
+		/*
+		 * The score awarded for this action (this may be negative)
+		 */
+		$schema->score = new IntegerField();
+		
+		/*
+		 * Records the time the record was created. This will be used to slowly 
+		 * purge the history and/or limit the amount of karma that the user can
+		 * collect.
+		 */
 		$schema->created = new IntegerField(true);
-		$schema->expires = new IntegerField(true);
+		
+		/*
+		 * Due to the amount of queries involving the user and the time, we index 
+		 * the two fields together.
+		 */
+		$schema->index($schema->user, $schema->created);
 	}
 
 }

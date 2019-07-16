@@ -27,7 +27,7 @@ use spitfire\storage\database\Schema;
  * THE SOFTWARE.
  */
 
-class BadgeModel extends Model
+class BadgeModel extends Model 
 {
 	/**
 	 * 
@@ -35,32 +35,11 @@ class BadgeModel extends Model
 	 * @return Schema
 	 */
 	public function definitions(Schema $schema) {
+		$schema->badge = new Reference(QuestModel::class);
+		$schema->user = new Reference(UserModel::class);
 		
-		$schema->color = new EnumField('bronze', 'silver', 'gold');
-		$schema->icon = new FileField();
-		$schema->name = new StringField(255);
-		$schema->description = new StringField(255);
-		
-		/*
-		 * The classname and count indicate the amount of activity with the given
-		 * classname the user needs to collect in order to receive the badge.
-		 */
-		$schema->activityName = new StringField(20);
-		$schema->count = new IntegerField(true);
-		
-		/*
-		 * Some badges are given to users "at birth", meaning they receive the badge
-		 * when the user account is created and, usually, the badge expires afterwards.
-		 */
-		$schema->givenAtBirth = new BooleanField();
-		
-		/*
-		 * If the TTL is set, the system must only count the events given in the 
-		 * TTL as valid. For example, if the user is required to receive 20 monthly
-		 * comments to be "conversation starter", then the system must make sure 
-		 * that the badge is removed when the 20th comment is older than a month.
-		 */
-		$schema->ttl = new IntegerField(true);
+		$schema->created = new IntegerField(true);
+		$schema->expires = new IntegerField(true);
 	}
 
 }

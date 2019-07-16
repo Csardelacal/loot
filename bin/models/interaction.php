@@ -3,7 +3,7 @@
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
-class ActivityModel extends Model
+class InteractionModel extends Model
 {
 	
 	/**
@@ -25,15 +25,10 @@ class ActivityModel extends Model
 		$schema->value = new IntegerField();
 		
 		/*
-		 * This is for the suer to identify the sources of their reputation.
+		 * This is for the user to identify the sources of their reputation.
 		 */
 		$schema->caption = new StringField(255);
 		$schema->url = new StringField(4096);
-		
-		/*
-		 * The score awarded for this action (this may be negative)
-		 */
-		$schema->score = new IntegerField();
 		
 		/*
 		 * Records the time the record was created. This will be used to slowly 
@@ -41,6 +36,12 @@ class ActivityModel extends Model
 		 * collect.
 		 */
 		$schema->created = new IntegerField(true);
+		
+		/*
+		 * At first we will only record the fact that the record came in, after that,
+		 * a cronjob should process it and award the appropriate badges, score etc.
+		 */
+		$schema->processed = new IntegerField(true);
 		
 		/*
 		 * Due to the amount of queries involving the user and the time, we index 
