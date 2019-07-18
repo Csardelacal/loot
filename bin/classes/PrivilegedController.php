@@ -24,14 +24,7 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+class PrivilegedController extends BaseController
 {
-	
-	/**
-	 * 
-	 */
-	public function index() {
-		
-	}
 	
 }

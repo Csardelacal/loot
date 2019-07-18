@@ -24,13 +24,29 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+/**
+ * A quest determines the requirements a user needs to meet in order to receive
+ * a certain badge. Quests can only be created, listed and modified by administrative
+ * users with appropriate permissions.
+ * 
+ * @author César de la Cal Bretschneider <cesar@magic3w.com>
+ */
+class QuestController extends PrivilegedController
 {
 	
-	/**
-	 * 
-	 */
 	public function index() {
+		
+	}
+	
+	public function create() {
+		
+	}
+	
+	public function edit() {
+		
+	}
+	
+	public function delete() {
 		
 	}
 	

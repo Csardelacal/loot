@@ -24,13 +24,26 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+class InteractionController extends BaseController
 {
 	
 	/**
+	 * This action allows applications on the network to submit new entries to the
+	 * user's activity.
+	 * 
+	 * @request-method POST
+	 * 
+	 * @validate POST#target(positive number required)
+	 * @validate POST#source(positive number required)
+	 * 
+	 * @validate POST#name(required string)
+	 * @validate POST#value(number)
+	 * 
+	 * @validate POST#caption (required string)
+	 * @validate POST#url (string url)
 	 * 
 	 */
-	public function index() {
+	public function push() {
 		
 	}
 	

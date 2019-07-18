@@ -24,13 +24,17 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+class UserController extends BaseController
 {
 	
 	/**
+	 * Returns the information the system holds on a user. This includes their
+	 * username, score and badges they have earned.
 	 * 
+	 * This endpoint does not provide any feedback on the progress a single user
+	 * is making towards a badge.
 	 */
-	public function index() {
+	public function profile() {
 		
 	}
 	

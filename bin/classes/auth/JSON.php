@@ -1,9 +1,11 @@
-<?php
+<?php namespace auth;
+
+use spitfire\exceptions\PrivateException;
 
 /* 
  * The MIT License
  *
- * Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+ * Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +26,17 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+class JSON
 {
 	
-	/**
-	 * 
-	 */
-	public function index() {
+	public static function decode($string) {
 		
+		$data = json_decode($string);
+
+		if (json_last_error() !== JSON_ERROR_NONE) { 
+			throw new PrivateException('Invalid JSON - ' . json_last_error_msg(), 1806251459); 
+		}
+		
+		return $data;
 	}
-	
 }

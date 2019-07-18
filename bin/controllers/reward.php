@@ -24,13 +24,32 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+/**
+ * A reward defines the amount of "XP" that a user receives when they perform
+ * or receive a certain type of interaction.
+ * 
+ * The system will require the administrator to provide a certain keyword (an
+ * identifier) that it will match against the data it receives from other apps
+ * that are pushing data towards it.
+ * 
+ * @author César de la Cal Bretschneider <cesar@magic3w.com>
+ */
+class RewardController extends PrivilegedController
 {
 	
-	/**
-	 * 
-	 */
 	public function index() {
+		
+	}
+	
+	public function create() {
+		
+	}
+	
+	public function edit() {
+		
+	}
+	
+	public function delete() {
 		
 	}
 	
