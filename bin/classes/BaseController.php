@@ -2,7 +2,10 @@
 
 use auth\SSO;
 use auth\SSOCache;
+use auth\Token;
+use spitfire\cache\MemcachedAdapter;
 use spitfire\core\Environment;
+use spitfire\io\session\Session;
 
 /* 
  * The MIT License
@@ -31,19 +34,23 @@ use spitfire\core\Environment;
 class BaseController extends Controller
 {
 	
+	protected $session;
+	
 	/**
 	 *
 	 * @var SSO
 	 */
-	private $sso;
+	protected $sso;
 	
-	private $user;
+	protected $user;
 	
-	private $authapp;
+	protected $authapp;
+	
+	protected $ping;
 	
 	public function _onload() {
 		
-		$session     = Session::getInstance();
+		$session = $this->session = Session::getInstance();
 		
 		#Create a brief cache for the sessions.
 		$cache       = new MemcachedAdapter();
@@ -54,18 +61,22 @@ class BaseController extends Controller
 		$this->token   = isset($_GET['token'])? $this->sso->makeToken($_GET['token']) : $session->getUser();
 		
 		#Fetch the user from the cache if necessary
-		$this->user  = $this->token && $this->token instanceof Token? $cache->get('ping_token_' . $this->token->getId(), function () { 
+		$this->user  = $this->token && $this->token instanceof Token? $cache->get('loot_token_' . $this->token->getId(), function () { 
 			return $this->token->isAuthenticated()? $this->token->getTokenInfo()->user : null; 
 		}) : null;
 		
 		$this->authapp = isset($_GET['signature'])? $this->sso->authApp($_GET['signature']) : 
-			($this->user? $cache->get('ping_token_' . $this->token->getId(), function () { 
+			($this->user? $cache->get('loot_authapp_' . $this->token->getId(), function () { 
 				return $this->token->getTokenInfo()->app->id; 
 			}) : null);
+			
+		$this->ping = new ping\Ping(Environment::get('ping'), $this->sso);
 		
 		#Maintain the user in the view. This way we can draw an interface for them
 		$this->view->set('authUser', $this->user);
+		$this->view->set('authToken', $this->token);
 		$this->view->set('sso', $this->sso);
+		$this->view->set('ping', $this->ping);
 	}
 	
 }

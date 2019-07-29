@@ -42,6 +42,8 @@ class HistoryModel extends Model
 		$schema->month = new IntegerField(true);
 		
 		$schema->balance = new IntegerField();
+		
+		$schema->index($schema->user, $schema->year, $schema->month);
 	}
 
 }

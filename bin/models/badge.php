@@ -40,6 +40,8 @@ class BadgeModel extends Model
 		
 		$schema->created = new IntegerField(true);
 		$schema->expires = new IntegerField(true);
+		
+		$schema->index($schema->user, $schema->expires);
 	}
 
 }

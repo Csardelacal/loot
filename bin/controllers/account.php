@@ -24,27 +24,23 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+class AccountController extends BaseController
 {
 	
-	/**
-	 * 
-	 */
-	public function index() {
+	public function login() {
+		$rtt = isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/') && !Strings::startsWith($_GET['returnto'], '//');
 		
 		if ($this->user) {
-			$dbu = db()->table('user')->get('_id', $this->user->id)->first();
-			if (!$dbu) { $dbu = UserModel::make($this->sso->getUser($this->user->id)); }
-			
-			/*
-			 * Retrieve the data necessary to assemble a small dashboard for the user
-			 * to view his data and history.
-			 */
-			//TODO: Implement
+			return $this->response->setBody('Redirecting...')
+					->getHeaders()->redirect($rtt? $_GET['returnto'] : url());
 		}
-		else {
-			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('account', 'login'));
-		}
+		
+		$this->session->lock($token = $this->sso->createToken(7 * 86400));
+		
+		echo $this->token->getId(), '<br>';
+		die($token->getRedirect((string) spitfire\core\http\AbsoluteURL::current()));
+		
+		$this->response->setBody('Redirection...')->getHeaders()->redirect($token->getRedirect((string) spitfire\core\http\AbsoluteURL::current()));
+		return;
 	}
-	
 }

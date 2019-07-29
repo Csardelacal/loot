@@ -36,7 +36,12 @@ class UserModel extends Model
 	 * @return Schema
 	 */
 	public function definitions(Schema $schema) {
-		
+	}
+	
+	public function make(\auth\User$user) {
+		$record = db()->table('user')->newRecord();
+		$record->_id = $user->getId();
+		$record->store();
 	}
 
 }

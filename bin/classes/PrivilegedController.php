@@ -27,4 +27,34 @@
 class PrivilegedController extends BaseController
 {
 	
+	protected $isPrivileged;
+	
+	public function _onload() {
+		/*
+		 * Start by executing the basic functions that the base controller provides
+		 * and on which this controller depends.
+		 */
+		parent::_onload();
+		
+		/*
+		 * Determine whether the current user is an administrative user.
+		 */
+		$memcached = new \spitfire\cache\MemcachedAdapter();
+		
+		$this->isPrivileged = $memcached->get('is_adiministrative_user' . $this->user->id, function () {
+			/*
+			 * Fetch the group (and it's member list) that contains the administrative
+			 * members for the system.
+			 */
+			$group = $this->sso->getGroup(spitfire\core\Environment::get('permissions.admin.group'));
+			
+			foreach ($group->members as $member) {
+				if ($member->id == $this->user->id) { return true; }
+			}
+			
+			return false;
+			
+		});
+		
+	}
 }
