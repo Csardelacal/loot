@@ -45,6 +45,43 @@ class InteractionController extends BaseController
 	 */
 	public function push() {
 		
+		/*
+		 * Check if there is an application context, and only an application context.
+		 * Users shouldn't be allowed to modify their own reputation.
+		 */
+		if (!$this->authapp || $this->user) {
+			throw new PublicException('Users are not allowed to push interactions. Please do so from an application', 403);
+		}
+		
+		/*
+		 * Retrieve the source from the request. This is the user where the interaction
+		 * stems from.
+		 */
+		$src = db()->table('user')->get('_id', $_POST['source'])->first();
+		if (!$src) { $src = UserModel::make($this->sso->getUser($_POST['source'])); }
+		
+		/*
+		 * Get the user that received the interaction.
+		 */
+		$tgt = db()->table('user')->get('_id', $_POST['target'])->first();
+		if (!$tgt) { $src = UserModel::make($this->sso->getUser($_POST['target'])); }
+		
+		/*
+		 * Create the record and store it to the database.
+		 */
+		$record = db()->table('interaction')->newRecord();
+		$record->name = $_POST['name'];
+		$record->value = $_POST['value'];
+		$record->caption = $_POST['caption'];
+		$record->url = $_POST['url'];
+		$record->created = time();
+		$record->store();
+		
+		/*
+		 * Pass the data onto the view, so the application sending the request can
+		 * parse it and extract data from it.
+		 */
+		$this->view->set('record', $record);
 	}
 	
 }

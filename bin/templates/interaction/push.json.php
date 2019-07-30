@@ -1,8 +1,5 @@
 <?php
 
-use spitfire\Model;
-use spitfire\storage\database\Schema;
-
 /* 
  * The MIT License
  *
@@ -27,41 +24,12 @@ use spitfire\storage\database\Schema;
  * THE SOFTWARE.
  */
 
-class RewardModel extends Model
-{
-	
-	/*
-	 * Give the user the option to award a reward to both the source and the target
-	 * of the interaction. This allows to define interactions that are mutually
-	 * beneficial for the user's scores, like comments or payments.
-	 */
-	const AWARDTO_SOURCE = 0x01;
-	const AWARDTO_TARGET = 0x02;
-	
-	/**
-	 * 
-	 * @param Schema $schema
-	 * @return Schema
-	 */
-	public function definitions(Schema $schema) {
-		$schema->activityName = new StringField(20);
-		$schema->score = new IntegerField();
-		
-		/*
-		 * This field indicates whether the score is awarded to the source, or the 
-		 * target of an interaction, or even both.
-		 */
-		$schema->awardTo = new IntegerField(true);
-		
-		/*
-		 * Indicates whether the reward is "per value" of activity. Sometimes activity
-		 * can be measured in a "per value" or "per instance".
-		 * 
-		 * For example, an online shop may reward a customer with a badge if they
-		 * bought 35 times (per instance) or because their total checkout was more
-		 * than USD100 in the last month.
-		 */
-		$schema->perValue = new BooleanField();
-	}
-
-}
+/*
+ * The replies that the server can send to this endpoint are really not that
+ * exciting. The issue being that the interactions don't carry any real weight
+ * to them for the application sending them.
+ */
+echo json_encode([
+	'id' => $record->_id,
+	'accepted' => true
+]);

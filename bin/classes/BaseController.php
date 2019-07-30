@@ -42,6 +42,8 @@ class BaseController extends Controller
 	 */
 	protected $sso;
 	
+	protected $token;
+	
 	protected $user;
 	
 	protected $authapp;
