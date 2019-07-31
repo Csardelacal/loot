@@ -39,7 +39,7 @@ class QuestModel extends Model
 		
 		$schema->color = new EnumField('bronze', 'silver', 'gold', 'yellow', 'amber', 'red');
 		$schema->icon = new FileField();
-		$schema->name = new StringField(255);
+		$schema->name = new StringField(50);
 		$schema->description = new StringField(255);
 		
 		/*

@@ -1,5 +1,9 @@
 <?php
 
+use spitfire\core\http\URL;
+use spitfire\exceptions\HTTPMethodException;
+use spitfire\exceptions\PublicException;
+
 /* 
  * The MIT License
  *
@@ -34,20 +38,88 @@
 class QuestController extends PrivilegedController
 {
 	
+	public function _onload() {
+		parent::_onload();
+		
+		if (!$this->user) {
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'login', ['returnto' => URL::current()]));
+		}
+		
+		if (!$this->isPrivileged) {
+			throw new PublicException('Restricted to administrators only', 403);
+		}
+	}
+	
+	/**
+	 * This simply lists the quests available for the administrative user to 
+	 * manage them. The administrator is then able to add quests, edit them, or
+	 * delete them altogether.
+	 * 
+	 * 
+	 */
 	public function index() {
-		
+		$quests = db()->table('quest')->getAll()->all();
+		$this->view->set('quests', $quests);
 	}
 	
-	public function create() {
+	/**
+	 * 
+	 * @validate >> POST#color(string required in['bronze', 'silver', 'gold', 'yellow', 'amber', 'red'])
+	 * @validate >> POST#name(string required length[3, 255])
+	 * @validate >> POST#description(string required length[3, 50])
+	 * @validate >> POST#activityName(string required length[3, 20])
+	 * @validate >> POST#threshold(number required)
+	 * @validate >> POST#ttl(number)
+	 * 
+	 * @param QuestModel $quest
+	 */
+	public function edit(QuestModel$quest = null) {
 		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException('Not POSTed'); }
+			if (!$this->validation->isEmpty()) { throw new ValidationException('Validation failure', 1907311827, $this->validation->toArray()); }
+			
+			$record = $quest? : db()->table('quest')->newRecord();
+			$record->color = $_POST['color'];
+			$record->icon = $_POST['icon'] instanceof spitfire\io\Upload? $_POST['icon']->store()->uri() : null;
+			$record->name = $_POST['name'];
+			$record->description = $_POST['description'];
+			$record->activityName = $_POST['activityName'];
+			$record->threshold = $_POST['threshold'];
+			$record->perValue = isset($_POST['perValue']);
+			$record->birthRight = isset($_POST['birthRight']);
+			$record->ttl = empty($_POST['ttl'])? null : $_POST['ttl'];
+			$record->store();
+			
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('quest', 'edit', $record->_id));
+		} 
+		catch (HTTPMethodException$e) {
+			//Do nothing, show the form
+		}
+		catch (spitfire\validation\ValidationException$e) {
+			$this->view->set('messages', $e->getResult());
+		}
+		
+		$this->view->set('record', $quest);
 	}
 	
-	public function edit() {
+	/**
+	 * Delete a quest from the pool of available ones. This method requires the 
+	 * use of XSRF to prevent the user from being sent via a script directly to 
+	 * this endpoint to delete the quest.
+	 * 
+	 * @param QuestModel $quest
+	 */
+	public function delete(QuestModel$quest) {
 		
-	}
-	
-	public function delete() {
+		$xsrf = new spitfire\io\XSSToken();
 		
+		if (isset($_GET['confirm']) && $xsrf->verify($_GET['confirm'])) {
+			$quest->delete();
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('quest'));
+		}
+		
+		$this->view->set('xsrf', $xsrf);
 	}
 	
 }
