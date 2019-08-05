@@ -38,12 +38,18 @@ class HistoryModel extends Model
 	public function definitions(Schema $schema) {
 		$schema->user = new Reference(UserModel::class);
 		
-		$schema->year = new IntegerField(true);
-		$schema->month = new IntegerField(true);
 		
 		$schema->balance = new IntegerField();
+		$schema->effective = new IntegerField(true);
+		$schema->created = new IntegerField(true);
 		
-		$schema->index($schema->user, $schema->year, $schema->month);
+		$schema->index($schema->user, $schema->effective);
+	}
+	
+	public function onbeforesave() {
+		if (!$this->created) {
+			$this->created = time();
+		}
 	}
 
 }

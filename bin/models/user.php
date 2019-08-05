@@ -36,12 +36,22 @@ class UserModel extends Model
 	 * @return Schema
 	 */
 	public function definitions(Schema $schema) {
+		$schema->balanced = new IntegerField(true);
+		$schema->index($schema->balanced);
 	}
 	
 	public function make(\auth\User$user) {
 		$record = db()->table('user')->newRecord();
 		$record->_id = $user->getId();
 		$record->store();
+		
+		db()->table('quest')->get('birthRight', true)->all()->each(function ($quest) use ($record) {
+			$badge = db()->table('badge')->newRecord();
+			$badge->user = $record;
+			$badge->badge = $quest;
+			$badge->expires = time() + $quest->ttl;
+			$badge->store();
+		});
 	}
 
 }

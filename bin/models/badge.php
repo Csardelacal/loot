@@ -43,5 +43,11 @@ class BadgeModel extends Model
 		
 		$schema->index($schema->user, $schema->expires);
 	}
+	
+	public function onbeforesave() {
+		if (!$this->created) {
+			$this->created = time();
+		}
+	}
 
 }
