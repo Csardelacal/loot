@@ -1,5 +1,9 @@
 <?php
 
+use spitfire\exceptions\HTTPMethodException;
+use spitfire\exceptions\PublicException;
+use spitfire\validation\ValidationException;
+
 /* 
  * The MIT License
  *
@@ -37,20 +41,84 @@
 class RewardController extends PrivilegedController
 {
 	
+	/**
+	 * This controller can only be accessed by privileged users. The users can check
+	 * their scores somewhere else. The rewards are not publicly announced by the 
+	 * application.
+	 * 
+	 * @throws PublicException
+	 */
+	public function _onload() {
+		parent::_onload();
+		
+		if (!$this->user) {
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'login', ['returnto' => URL::current()]));
+		}
+		
+		if (!$this->isPrivileged) {
+			throw new PublicException('Restricted to administrators only', 403);
+		}
+	}
+	
+	/**
+	 * Lists the available rewards. 
+	 */
 	public function index() {
-		
+		$rewards = db()->table('reward')->getAll()->all();
+		$this->view->set('rewards', $rewards);
 	}
 	
-	public function create() {
+	/**
+	 * @validate >> POST#activity (string required length[3, 50])
+	 * @validate >> POST#score (positive number required)
+	 * @validate >> POST#awardTo (number required positive in[1, 2, 3])
+	 * 
+	 * @param RewardModel $reward
+	 */
+	public function edit(RewardModel$reward = null) {
 		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException('Not posted', 1908050853); }
+			if (!$this->validation->isEmpty()) { throw new ValidationException('Validation failed', 1908050855, $this->validation->toArray()); }
+			
+			$record = $reward?: db()->table('reward')->newRecord();
+			$record->activityName = $_POST['activity'];
+			$record->score = $_POST['score'];
+			$record->awardTo = $_POST['awardTo'];
+			$record->perValue = isset($_POST['value']) && ($_POST['value'] !== false);
+			$record->store();
+			
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('reward', 'edit', $record->_id));
+		}
+		catch (HTTPMethodException$e) {
+			//Show the form
+		}
+		catch (ValidationException$e) {
+			$this->view->set('messages', $e->getResult());
+		}
+		
+		$this->view->set('reward', $reward);
 	}
 	
-	public function edit() {
+	/**
+	 * Deletes a reward. Once it is deleted it will no longer be awarded to users.
+	 * 
+	 * NOTE: Since the crons run asynchronously, it may take a few minutes until the
+	 * crons are no longer awarding the selected reward. Equally, new rewards may
+	 * take a cron restart (or waiting for them to end) to be start being awarded.
+	 * 
+	 * @param RewardModel $reward
+	 */
+	public function delete(RewardModel$reward) {
 		
-	}
-	
-	public function delete() {
+		$xsrf = new spitfire\io\XSSToken();
 		
+		if (isset($_GET['confirm']) && $xsrf->verify($_GET['confirm'])) {
+			$reward->delete();
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('reward'));
+		}
+		
+		$this->view->set('xsrf', $xsrf);
 	}
 	
 }

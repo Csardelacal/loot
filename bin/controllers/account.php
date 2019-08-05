@@ -37,9 +37,6 @@ class AccountController extends BaseController
 		
 		$this->session->lock($token = $this->sso->createToken(7 * 86400));
 		
-		echo $this->token->getId(), '<br>';
-		die($token->getRedirect((string) spitfire\core\http\AbsoluteURL::current()));
-		
 		$this->response->setBody('Redirection...')->getHeaders()->redirect($token->getRedirect((string) spitfire\core\http\AbsoluteURL::current()));
 		return;
 	}
