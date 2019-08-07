@@ -65,7 +65,7 @@ class UserController extends BaseController
 		 * the default. Except by scripting webhooks to award users a score as soon
 		 * as they register.
 		 */
-		$score = ($history? $history->balance : 0) + $query->all()->extract('score')->sum();
+		$score = ($history? $history->balance : 0) + $query->all()->extract('score')->add([0])->sum();
 		
 		/*
 		 * Export the calculated data to the view.

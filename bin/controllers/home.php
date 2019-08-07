@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-class HomeController extends BaseController
+class HomeController extends PrivilegedController
 {
 	
 	/**
@@ -40,7 +40,32 @@ class HomeController extends BaseController
 			 * Retrieve the data necessary to assemble a small dashboard for the user
 			 * to view his data and history.
 			 */
-			//TODO: Implement
+			$badges = db()->table('badge')->get('user', $dbu)->where('expires', '>', time())->all();
+
+			$history = db()->table('history')->get('user', $dbu)->setOrder('created', 'DESC')->first();
+
+			/*
+			 * This query is a bit more delicate, since it will use the result of the 
+			 * previous query to assemble the score.
+			 */
+			$query = db()->table('score')->get('user', $dbu);
+
+			if ($history) {
+				$query->where('created', '>', $history->effective);
+			}
+
+			/*
+			 * Calculate the appropriate score for the user. Plase note that, if the 
+			 * user does have no history, we do assume that they started with a 0 reputation.
+			 * 
+			 * Currently, loot does not support users having any offset reputation from
+			 * the default. Except by scripting webhooks to award users a score as soon
+			 * as they register.
+			 */
+			$score = ($history? $history->balance : 0) + $query->all()->extract('score')->add([0])->sum();
+			
+			$this->view->set('badges', $badges);
+			$this->view->set('score', $score);
 		}
 		else {
 			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('account', 'login'));

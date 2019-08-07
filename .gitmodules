@@ -1,9 +1,9 @@
 [submodule "spitfire"]
 	path = spitfire
-	url = https://github.com/Csardelacal/SpitfireEngine.git
+	url = ssh://git@phabricator.magic3w.com/source/spitfire.git
 [submodule "_SCSS"]
 	path = assets/scss/_
-	url = https://github.com/Csardelacal/underscoreSCSS.git
+	url = ssh://git@phabricator.magic3w.com/source/underscoreSCSS.git
 [submodule "m3JS"]
 	path = assets/js/m3
-	url = https://github.com/Csardelacal/m3.js.git
+	url = ssh://git@phabricator.magic3w.com/source/M3JS.git

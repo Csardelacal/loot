@@ -77,7 +77,6 @@
 				<span class="toggle-button dark"></span>
 				<a href="<?= url() ?>">
 					<img src="<?= spitfire\core\http\URL::asset('img/logo.png') ?>" width="17" style="margin-right: 5px; vertical-align: -3px"> 
-					<span class="not-mobile">Portfolio</span>
 				</a>
 			</div>
 			<div class="right">
@@ -108,23 +107,30 @@
 		<!--Sidebar -->
 		<div class="contains-sidebar collapsed">
 			<div class="sidebar">
+				<div class="navbar">
+					<div class="left">
+						<a href="<?= url() ?>">
+							<img src="<?= spitfire\core\http\URL::asset('img/logo.png') ?>" width="17" style="margin-right: 5px; vertical-align: -3px"> 
+							<span class="not-mobile">Loot</span>
+						</a>
+					</div>
+				</div>
 
 				<?php if(isset($authUser) && $authUser): ?>
-				<div class="menu-title"> Portfolio</div>
-				<div class="menu-entry"><a href="<?= url('upload') ?>">Upload</a></div>
-				<div class="menu-entry"><a href="<?= url('user', $authUser->username) ?>">My art</a></div>
-
-				<div class="menu-title"> Subscription</div>
-				<div class="menu-entry"><a href="<?= url('subscription') ?>">My subscriptions</a></div>
-				<?php if ($dbUser->created < time() - 86400 * 30): ?> 
-				<div class="menu-entry"><a href="<?= url('settings', 'wallet') ?>">My revenue</a></div>
-				<?php endif; ?>
+				<div class="menu-title"> Loot</div>
+				<div class="menu-entry"><a href="<?= url() ?>">Overview</a></div>
 
 				<div class="menu-title"> Settings</div>
 				<div class="menu-entry"><a href="<?= url('settings') ?>">Settings</a></div>
 				<?php else: ?>
 				<div class="menu-title"> Account</div>
 				<div class="menu-entry"><a href="<?= url('user', 'login') ?>"   >Login</a></div>
+				<?php endif; ?>
+				
+				<?php if(isset($authUser) && $authUser && isset($privileged) && $privileged): ?>
+				<div class="menu-title"> Administration</div>
+				<div class="menu-entry"><a href="<?= url('quest') ?>">Quests</a></div>
+				<div class="menu-entry"><a href="<?= url('reward') ?>">Rewards</a></div>
 				<?php endif; ?>
 			</div>
 		</div>

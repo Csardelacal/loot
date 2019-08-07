@@ -1,1 +1,4 @@
-The homepage
+
+
+Score: <?= $score ?>
+Badges: <?= $badges->join(', '); ?>
