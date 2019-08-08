@@ -47,7 +47,8 @@ class InteractionModel extends Model
 		 * Due to the amount of queries involving the user and the time, we index 
 		 * the two fields together.
 		 */
-		$schema->index($schema->tgt, $schema->created);
+		$schema->index($schema->tgt, $schema->name, $schema->created);
+		$schema->index($schema->processed);
 	}
 
 }

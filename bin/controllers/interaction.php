@@ -1,5 +1,7 @@
 <?php
 
+use spitfire\exceptions\PublicException;
+
 /* 
  * The MIT License
  *
@@ -66,10 +68,16 @@ class InteractionController extends BaseController
 		$tgt = db()->table('user')->get('_id', $_POST['target'])->first();
 		if (!$tgt) { $src = UserModel::make($this->sso->getUser($_POST['target'])); }
 		
+		if (!$src || !$tgt) {
+			throw new PublicException('Could not find users', 400);
+		}
+		
 		/*
 		 * Create the record and store it to the database.
 		 */
 		$record = db()->table('interaction')->newRecord();
+		$record->src = $src;
+		$record->tgt = $tgt;
 		$record->name = $_POST['name'];
 		$record->value = $_POST['value'];
 		$record->caption = $_POST['caption'];

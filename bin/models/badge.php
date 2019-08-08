@@ -35,7 +35,7 @@ class BadgeModel extends Model
 	 * @return Schema
 	 */
 	public function definitions(Schema $schema) {
-		$schema->badge = new Reference(QuestModel::class);
+		$schema->quest = new Reference(QuestModel::class);
 		$schema->user = new Reference(UserModel::class);
 		
 		$schema->created = new IntegerField(true);
