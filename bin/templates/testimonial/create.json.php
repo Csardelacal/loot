@@ -1,12 +1,9 @@
 <?php
 
-use spitfire\Model;
-use spitfire\storage\database\Schema;
-
 /* 
  * The MIT License
  *
- * Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+ * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,33 +24,7 @@ use spitfire\storage\database\Schema;
  * THE SOFTWARE.
  */
 
-class UserModel extends Model
-{
-	
-	/**
-	 * 
-	 * @param Schema $schema
-	 * @return Schema
-	 */
-	public function definitions(Schema $schema) {
-		$schema->balanced = new IntegerField(true);
-		$schema->index($schema->balanced);
-	}
-	
-	public function make(\auth\User$user) {
-		$record = db()->table('user')->newRecord();
-		$record->_id = $user->getId();
-		$record->store();
-		
-		db()->table('quest')->get('birthRight', true)->all()->each(function ($quest) use ($record) {
-			$badge = db()->table('badge')->newRecord();
-			$badge->user = $record;
-			$badge->quest = $quest;
-			$badge->expires = time() + $quest->ttl;
-			$badge->store();
-		});
-		
-		return $record;
-	}
-
-}
+echo json_encode([
+	'success' => true,
+	'id' => $testimonial->_id
+]);

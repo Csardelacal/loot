@@ -35,9 +35,6 @@ class InteractionController extends BaseController
 	 * 
 	 * @request-method POST
 	 * 
-	 * @validate POST#target(positive number required)
-	 * @validate POST#source(positive number required)
-	 * 
 	 * @validate POST#name(required string)
 	 * @validate POST#value(number)
 	 * 
@@ -60,15 +57,15 @@ class InteractionController extends BaseController
 		 * stems from.
 		 */
 		$src = db()->table('user')->get('_id', $_POST['source'])->first();
-		if (!$src) { $src = UserModel::make($this->sso->getUser($_POST['source'])); }
+		if (!$src  && $_POST['source']) { $src = UserModel::make($this->sso->getUser($_POST['source'])); }
 		
 		/*
 		 * Get the user that received the interaction.
 		 */
 		$tgt = db()->table('user')->get('_id', $_POST['target'])->first();
-		if (!$tgt) { $src = UserModel::make($this->sso->getUser($_POST['target'])); }
+		if (!$tgt && $_POST['target']) { $tgt = UserModel::make($this->sso->getUser($_POST['target'])); }
 		
-		if (!$src || !$tgt) {
+		if (!$src && !$tgt) {
 			throw new PublicException('Could not find users', 400);
 		}
 		

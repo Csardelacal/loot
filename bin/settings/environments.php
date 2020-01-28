@@ -10,6 +10,7 @@ $e = new Environment('test');
 
 $e->set('db', 'mysqlpdo://root:root@localhost/loot?prefix=loot_&encoding=utf8');
 $e->set('SSO', 'http://1502978797:pXBMLEpBGtxUUzSwCORquRHtpFKdSTbE0qyDUaCnEr5crQ8@localhost/Auth');
+$e->set('ping', 'http://@localhost/ping');
 
 $e->set('debug_mode', 1);
 $e->set('debugging_mode', $e->get('debug_mode'));

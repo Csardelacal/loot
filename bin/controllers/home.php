@@ -64,8 +64,11 @@ class HomeController extends PrivilegedController
 			 */
 			$score = ($history? $history->balance : 0) + $query->all()->extract('score')->add([0])->sum();
 			
+			$this->view->set('user', $dbu);
 			$this->view->set('badges', $badges);
 			$this->view->set('score', $score);
+			$this->view->set('recent', db()->table('score')->get('user', $dbu)->setOrder('created', 'DESC')->range(0, 20));
+			$this->view->set('testimonials', db()->table('testimonial')->get('user', $dbu)->setOrder('created', 'DESC')->range(0, 5));
 		}
 		else {
 			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('account', 'login'));

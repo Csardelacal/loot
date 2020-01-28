@@ -41,6 +41,7 @@ class ScoreDirector extends Director
 		 * query their data and generate a new score.
 		 */
 		$pending = db()->table('user')->get('balanced', time() - 86400 * 30, '<')->all();
+		$pending->add(db()->table('user')->get('balanced', null)->all());
 		
 		/*
 		 * The effective variable allows all the user accounts to be balanced considering
@@ -50,7 +51,7 @@ class ScoreDirector extends Director
 		$effective = time() - 1;
 		$since = time() - (86400 * 365 * 2);
 		
-		console()->info(sprintf('Found %s user accounts that require balancing'))->ln();
+		console()->info(sprintf('Found %s user accounts that require balancing', $pending->count()))->ln();
 		
 		foreach($pending as $user) {
 			/*
@@ -62,7 +63,7 @@ class ScoreDirector extends Director
 			 * current one. But it's not completely trivial, so we're leaving it for
 			 * a potential improved version.
 			 */
-			$score = db()->table('score')->get('user', $user)->where('created', '>', $since)->where('created', '<', $effective)->all()->extract('score')->sum();
+			$score = db()->table('score')->get('user', $user)->where('created', '>', $since)->where('created', '<', $effective)->all()->extract('score')->add([0])->sum();
 			
 			/*
 			 * Generate a new historical record. The application can use these to 
@@ -70,7 +71,7 @@ class ScoreDirector extends Director
 			 */
 			$history = db()->table('history')->newRecord();
 			$history->user = $user;
-			$history->score = $score;
+			$history->balance = $score;
 			$history->effective = $effective;
 			$history->created = time();
 			$history->store();

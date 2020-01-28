@@ -26,9 +26,102 @@ THE SOFTWARE.
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
 
-body {
-	margin: 0;
-	font-family: helvetica;
+@import '_/_.scss';
+@import 'loot/_badge.scss';
+@import 'loot/_color.scss';
+@import 'loot/_text.scss';
+@import 'loot/_pagination.scss';
+@import 'ui/_dropdown.scss';
+
+html {
+	background-color: #eef1f6;
+	color: $grey100;
 }
 
-@import '_/_.scss';
+h2 {
+	color: $grey400;
+}
+
+.material {
+	background: #FFF;
+	border-radius: 2px;
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.07);
+	padding: 2rem 3rem;
+	
+	&.unpadded {
+		padding: 0px;
+	}
+	
+	.padded {
+		padding:  2rem 3rem;
+		
+		&.a-little {
+			padding: 1rem 3rem;
+		}
+	}
+	
+	.darkened {
+		background: #EEE;
+	}
+}
+
+footer {
+	padding-top: 1rem;
+	font-size: .8rem;
+	color: #777;
+}
+
+.button {
+	background: linear-gradient(90deg, #396afc, #2948ff);
+	border-radius: 4px;
+	padding: .6rem 1.4rem ;
+	color: #FFF;
+	font-weight: bolder;
+	box-shadow: 2px 1px 3px rgba(0, 0, 0, .3);
+	text-decoration: none;
+	
+	&.success {
+		background: linear-gradient(-90deg, #2FAD30, #35C537);
+	}
+	
+	&.borderless {
+		background: none;
+		color: #652CA5;
+		font-weight: bold;
+		box-shadow: none;
+	}
+}
+
+.separator {
+	border-top: solid 1px #C1C8CD;
+}
+
+.notification-indicator {
+	display: inline-block;
+	position: relative;
+	
+	.badge {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		padding: 0;
+		font-size: 0;
+		border: solid 2px #eef1f6;
+		background: #F00;
+			
+		&[data-ping-amt="0"] {
+			background: $grey400;
+		}
+	}
+	
+	&.static .badge {
+		position: static;
+	}
+	
+	&.right .badge {
+		right: 0;
+	}
+}

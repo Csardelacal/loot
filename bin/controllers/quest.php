@@ -3,6 +3,7 @@
 use spitfire\core\http\URL;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
+use spitfire\validation\ValidationException;
 
 /* 
  * The MIT License
@@ -58,13 +59,16 @@ class QuestController extends PrivilegedController
 	 * 
 	 */
 	public function index() {
-		$quests = db()->table('quest')->getAll()->all();
-		$this->view->set('quests', $quests);
+		$query = db()->table('quest')->getAll();
+		$pages = new \spitfire\storage\database\pagination\Paginator($query);
+		
+		$this->view->set('pages', $pages);
+		$this->view->set('quests', $pages->records());
 	}
 	
 	/**
 	 * 
-	 * @validate >> POST#color(string required in['bronze', 'silver', 'gold', 'yellow', 'amber', 'red'])
+	 * @validate >> POST#color(string required in[bronze, silver, gold, green, red])
 	 * @validate >> POST#name(string required length[3, 255])
 	 * @validate >> POST#description(string required length[3, 50])
 	 * @validate >> POST#activityName(string required length[3, 20])
@@ -122,4 +126,7 @@ class QuestController extends PrivilegedController
 		$this->view->set('xsrf', $xsrf);
 	}
 	
+	public function detail($id) {
+		$this->view->set('badge', db()->table('quest')->get('_id', $id)->first(true));
+	}
 }

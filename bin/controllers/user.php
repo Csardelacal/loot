@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-class UserController extends BaseController
+class UserController extends PrivilegedController
 {
 	
 	/**
@@ -44,6 +44,10 @@ class UserController extends BaseController
 		
 		$user = db()->table('user')->get('_id', $remote->getId())->first()? : UserModel::make($remote);
 		$badges = db()->table('badge')->get('user', $user)->where('expires', '>', time())->all();
+		
+		$testimonials = db()->table('testimonial')->get('user', $user)->range(0, 20);
+		$positive = db()->table('testimonial')->get('user', $user)->where('recommendation', 1)->count() ;
+		$negative = db()->table('testimonial')->get('user', $user)->where('recommendation', 0)->count() ;
 		
 		$history = db()->table('history')->get('user', $user)->setOrder('created', 'DESC')->first();
 		
@@ -74,6 +78,8 @@ class UserController extends BaseController
 		$this->view->set('user', $user);
 		$this->view->set('score', $score);
 		$this->view->set('badges', $badges);
+		$this->view->set('testimonials', $testimonials);
+		$this->view->set('approval', $positive / ($positive + $negative));
 	}
 	
 }

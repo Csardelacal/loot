@@ -1,4 +1,6 @@
 
+<?php $profile = $sso->getUser($user->_id); ?>
+
 <div class="spacer" style="height: 20px"></div>
 
 <div class="row l1">
@@ -6,7 +8,7 @@
 		<div class="material">
 			<div class="row l5">
 				<div class="span l1">
-					<h2 style="margin: 0">Your history</h2>
+					<h2 style="margin: 0"><?= $profile->getUsername() ?>'s reputation</h2>
 				</div>
 				<div class="span l3">
 					<canvas id="score-history" style="width: 100%; height: 60px"></canvas>
@@ -39,7 +41,7 @@
 							<?php else: ?>
 								<span class="icon-placeholder"></span>
 							<?php endif; ?>
-							<a class="caption" href="<?= url('quest', 'detail', $badge->quest->_id) ?>"><?= __($badge->quest->name) ?></a>
+							<a class="caption" href="<?= url('badge', 'detail', $badge->quest->_id) ?>"><?= __($badge->quest->name) ?></a>
 						</div>
 						
 						<span style="display: inline-block; width: 10px"></span>
@@ -76,7 +78,7 @@
 							</p>
 
 							<div class="spacer small"></div>
-							<?php if ($testimonial->recommendation && $testimonial->client): ?>
+							<?php if ($testimonial->recommendation  && $testimonial->client): ?>
 							<span style="color: #090"><?= $client->getUserName() ?></span>
 							<?php elseif ($testimonial->recommendation): ?>
 							<span style="color: #090">Client</span>
@@ -104,7 +106,6 @@
 
 <div class="row l1">
 	<div class="span l1 align-right">
-		<?php $profile = $sso->getUser($authUser->id); ?>
 		<a href="<?= url('testimonial', 'on', $profile->getUsername()) ?>" class="text:grey-400" style="text-decoration: none">More testimonials</a>
 	</div>
 </div>
@@ -119,6 +120,7 @@
 					<h2 style="margin: 0">Recent history</h2>
 				</div>
 				<div class="span l4">
+					<?php $recent = db()->table('score')->get('user', $user)->setOrder('created', 'DESC')->range(0, 10); ?>
 					<?php foreach ($recent as $change): ?>
 					<div class="row l4 ng">
 						<div class="span l3">

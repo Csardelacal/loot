@@ -128,17 +128,26 @@ class InteractionDirector extends Director
 			$rewards = db()->table('reward')->get('activityName', $interaction->name)->all();
 			
 			foreach ($rewards as $reward) {
-				collect([RewardModel::AWARDTO_SOURCE, RewardModel::AWARDTO_TARGET])
-					->filter(function ($e) use ($reward) { return $reward->awardTo & $e; } )
-					->each(function ($e) use ($reward, $interaction) {
-						$record = db()->table('score')->newRecord();
-						$record->interaction = $interaction;
-						$record->user = $e === RewardModel::AWARDTO_TARGET? $interaction->tgt : $interaction->src;
-						$record->rule = $reward;
-						$record->score = $reward->score * ($reward->perValue? $interaction->value : 1);
-						$record->created = time();
-						$record->store();
-					});
+				
+				if ($reward->awardTo == RewardModel::AWARDTO_SOURCE) {
+					$record = db()->table('score')->newRecord();
+					$record->interaction = $interaction;
+					$record->user = $interaction->src;
+					$record->rule = $reward;
+					$record->score = $reward->score * ($reward->perValue? $interaction->value : 1);
+					$record->created = time();
+					$record->user && $record->store();
+				}
+				
+				if ($reward->awardTo == RewardModel::AWARDTO_TARGET) {
+					$record = db()->table('score')->newRecord();
+					$record->interaction = $interaction;
+					$record->user = $interaction->tgt;
+					$record->rule = $reward;
+					$record->score = $reward->score * ($reward->perValue? $interaction->value : 1);
+					$record->created = time();
+					$record->user && $record->store();
+				}
 				
 			}
 			

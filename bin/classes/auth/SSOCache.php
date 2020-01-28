@@ -22,6 +22,13 @@ class SSOCache
 		}));
 	}
 	
+	public function getAppList() {
+		
+		return unserialize($this->cache->get('sso_applist', function () {
+			return serialize($this->sso->getAppList());
+		}));
+	}
+	
 	public function getSSO() {
 		return $this->sso;
 	}

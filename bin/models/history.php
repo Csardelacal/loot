@@ -51,5 +51,18 @@ class HistoryModel extends Model
 			$this->created = time();
 		}
 	}
+	
+	public static function snapshot($dbu, $time) {
+		$history = db()->table('history')->get('effective', $time, '<')->where('user', $dbu)->setOrder('effective', 'DESC')->first();
+		$query = db()->table('score')->get('user', $dbu);
+		
+		if ($history) {
+			$query->where('created', '>', $history->effective);
+		}
+		
+		$query->where('created', '<', $time);
+		
+		return ($history? $history->balance : 0) + $query->all()->extract('score')->add([0])->sum();
+	}
 
 }

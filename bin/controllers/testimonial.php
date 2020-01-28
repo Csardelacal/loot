@@ -1,0 +1,91 @@
+<?php
+
+use spitfire\exceptions\PublicException;
+
+/* 
+ * The MIT License
+ *
+ * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
+ * Testimonials allow users to provide feedback on other users. To ensure that
+ * users are allowed to provide feedback on their interaction with another user,
+ * the system requires that the testimonial is relayed from another application.
+ * 
+ * This could be a shop, game or anything the users interacted on.
+ * 
+ * @author César de la Cal Bretschneider <cesar@magic3w.com>
+ */
+class TestimonialController extends PrivilegedController
+{
+	
+	/**
+	 * 
+	 * @validate POST#body(string length[10, 400])
+	 * @validate POST#user(positive number required)
+	 * @validate POST#product(url)
+	 * 
+	 * @throws PublicException
+	 */
+	public function create() {
+		/*
+		 * Only applications are allowed to push testimonials, this ensures that
+		 * users cannot manipulate reviews - at least from Loot directly.
+		 */
+		if (!$this->authapp) {
+			throw new PublicException('Sorry. You are not authorized ot provide a testimonial', 403);
+		}
+		
+		$client = db()->table('user')->get('_id', $_POST['client'])->first();
+		if (!$client && $_POST['client']) { $client = UserModel::make($this->sso->getUser($_POST['client'])); }
+		
+		$user = db()->table('user')->get('_id', $_POST['user'])->first();
+		if (!$user) { $user = UserModel::make($this->sso->getUser($_POST['user'])); }
+		
+		/*
+		 * Create the record. 
+		 */
+		$testimonial = db()->table('testimonial')->newRecord();
+		$testimonial->body = $_POST['body'];
+		$testimonial->user = $user;
+		$testimonial->client = $client;
+		$testimonial->recommendation = isset($_POST['recommendation']) && $_POST['recommendation'] !== false;
+		$testimonial->product = $_POST['product'];
+		$testimonial->store();
+		
+		$this->view->set('testimonial', $testimonial);
+	}
+	
+	public function on($username) {
+		
+		$profile = $this->sso->getUser($username);
+		if (!$profile) { throw new PublicException('Not found', 404); }
+		
+		$dbu = db()->table('user')->get('_id', $profile->getId())->first(true);
+		$query = db()->table('testimonial')->get('user', $dbu);
+		$pages = new \spitfire\storage\database\pagination\Paginator($query);
+		
+		$this->view->set('pages', $pages);
+		$this->view->set('testimonials', $pages->records());
+	}
+	
+}

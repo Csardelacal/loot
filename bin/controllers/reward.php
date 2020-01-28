@@ -64,13 +64,16 @@ class RewardController extends PrivilegedController
 	 * Lists the available rewards. 
 	 */
 	public function index() {
-		$rewards = db()->table('reward')->getAll()->all();
-		$this->view->set('rewards', $rewards);
+		$query = db()->table('reward')->getAll();
+		$pages = new \spitfire\storage\database\pagination\Paginator($query);
+		
+		$this->view->set('pages', $pages);
+		$this->view->set('rewards', $pages->records());
 	}
 	
 	/**
 	 * @validate >> POST#activity (string required length[3, 50])
-	 * @validate >> POST#score (positive number required)
+	 * @validate >> POST#score (number required)
 	 * @validate >> POST#awardTo (number required positive in[1, 2, 3])
 	 * 
 	 * @param RewardModel $reward
@@ -85,7 +88,7 @@ class RewardController extends PrivilegedController
 			$record->activityName = $_POST['activity'];
 			$record->score = $_POST['score'];
 			$record->awardTo = $_POST['awardTo'];
-			$record->perValue = isset($_POST['value']) && ($_POST['value'] !== false);
+			$record->perValue = isset($_POST['value']) && ($_POST['value'] === 'true');
 			$record->store();
 			
 			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('reward', 'edit', $record->_id));

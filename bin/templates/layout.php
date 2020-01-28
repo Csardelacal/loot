@@ -38,17 +38,6 @@
 			window.baseURL = '<?= url() ?>';
 			window.depend.setBaseURL(window.baseURL + 'assets/js/');
 		</script>
-		
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-			ga('create', 'UA-63756475-2', 'auto');
-			ga('send', 'pageview');
-
-		 </script>
 		 
 		
 		<script src="<?= spitfire\core\http\URL::asset('js/m3/depend.js') ?>" type="text/javascript"></script>
@@ -75,32 +64,42 @@
 		<div class="navbar">
 			<div class="left">
 				<span class="toggle-button dark"></span>
-				<a href="<?= url() ?>">
-					<img src="<?= spitfire\core\http\URL::asset('img/logo.png') ?>" width="17" style="margin-right: 5px; vertical-align: -3px"> 
-				</a>
 			</div>
 			<div class="right">
 				<?php if(isset($authUser) && $authUser): ?>
-					<span class="h-spacer"></span>
-					<a class="menu-item not-mobile" href="<?= $ping->getURL() ?>/user/authorize/<?= $authToken->getId() ?>?returnto=/feed">
-						<span class="badge" data-ping-counter="0">0</span>
-					</a>
-					<span class="h-spacer"></span>
-					<a class="menu-item not-mobile" href="<?= url('user', $authUser->username) ?>">
-						<img src="<?= $authUser->avatar ?>" height="20"  style="margin-right: 5px; vertical-align: -5px">
-						<span class="not-mobile"><?= $authUser->username ?></span>
-					</a>
-					<span class="h-spacer"></span>
 					<div class="has-dropdown" style="display: inline-block">
-						<span class="app-switcher toggle" data-toggle="app-drawer"></span>
+						<a href="<?= url('user', 'profile', $authUser->username) ?>" class="app-switcher" data-toggle="app-drawer">
+							<span class="notification-indicator">
+								<span class="badge" data-ping-counter="0">0</span>
+								<img src="<?= $authUser->avatar ?>" width="32" height="32" style="border-radius: 50%; vertical-align: middle" >
+							</span>
+						</a>
 						<div class="dropdown right-bound unpadded" data-dropdown="app-drawer">
-							<div class="app-drawer" id="app-drawer"></div>
+							<div class="app-drawer" id="app-drawer">
+								<div class="navigation vertical">
+									<a class="navigation-item" href="<?= url('user', 'profile', $authUser->username) ?>">My reputation</a>
+									<a class="navigation-item" href="<?= $ping->getURL() ?>">
+										Feed
+										<span class="notification-indicator static">
+											<span class="badge" data-ping-counter="0">0</span>
+										</span>
+									</a>
+									<a class="navigation-item" href="<?= url('account', 'logout') ?>">Logout</a>
+								</div>
+							</div>
 						</div>
 					</div>
 					<span class="h-spacer"></span>
 				<?php else: ?>
 					<a class="menu-item" href="<?= url('account', 'login', Array('returnto' => $_SERVER['REQUEST_URI'])) ?>">Login</a>
 				<?php endif; ?>
+			</div>
+			<div class="center">
+				<a href="<?= url() ?>">
+					<?php $app = collect($sso->getAppList())->filter(function ($e) use ($sso) { return $e->id == $sso->getAppId(); })->rewind(); ?>
+					<img src="<?= $app->icon->m ?>" width="32"> 
+					<span class="desktop-only" style="vertical-align: .4rem"><?= $app->name ?></span>
+				</a>
 			</div>
 		</div>
 		
@@ -110,8 +109,9 @@
 				<div class="navbar">
 					<div class="left">
 						<a href="<?= url() ?>">
-							<img src="<?= spitfire\core\http\URL::asset('img/logo.png') ?>" width="17" style="margin-right: 5px; vertical-align: -3px"> 
-							<span class="not-mobile">Loot</span>
+							<?php $app = collect($sso->getAppList())->filter(function ($e) use ($sso) { return $e->id == $sso->getAppId(); })->rewind(); ?>
+							<img src="<?= $app->icon->m ?>" width="32"> 
+							<span class="desktop-only" style="vertical-align: .4rem"><?= $app->name ?></span>
 						</a>
 					</div>
 				</div>
@@ -119,9 +119,7 @@
 				<?php if(isset($authUser) && $authUser): ?>
 				<div class="menu-title"> Loot</div>
 				<div class="menu-entry"><a href="<?= url() ?>">Overview</a></div>
-
-				<div class="menu-title"> Settings</div>
-				<div class="menu-entry"><a href="<?= url('settings') ?>">Settings</a></div>
+				
 				<?php else: ?>
 				<div class="menu-title"> Account</div>
 				<div class="menu-entry"><a href="<?= url('user', 'login') ?>"   >Login</a></div>
@@ -132,6 +130,11 @@
 				<div class="menu-entry"><a href="<?= url('quest') ?>">Quests</a></div>
 				<div class="menu-entry"><a href="<?= url('reward') ?>">Rewards</a></div>
 				<?php endif; ?>
+				
+				<div class="spacer" style="height: 10px"></div>
+
+				<div class="menu-title">Our network</div>
+				<div id="appdrawer"></div>
 			</div>
 		</div>
 		
@@ -140,12 +143,9 @@
 		</div>
 		
 		<footer>
-			<div class="row l2">
-				<div class="span l1">
-					Commishes.Portfolio &copy; <?= date('Y') ?> - All rights reserved
-				</div>
-				<div class="span l1" style="text-align: right">
-					
+			<div class="row l1">
+				<div class="span l1 align-center">
+					Loot is open source software - Licensed under MIT License - &copy; <?= date('Y') ?>
 				</div>
 			</div>
 		</footer>
@@ -165,35 +165,41 @@
 		</script>
 		<script type="text/javascript">
 		(function () {
+			
 			depend(['ui/dropdown'], function (dropdown) {
 				dropdown('.app-switcher');
-			});
-			
-			depend(['phpas/app/drawer'], function (drawer) {
-				console.log(drawer);
 			});
 			
 			depend(['_scss'], function() {
 				console.log('Loaded _scss');
 			});
-			
-			setTimeout(function () {
-				document.body.appendChild(document.createElement('script')).src="<?= url('cron') ?>";
-			}, 800);
 		}());
 		</script>
-		
 		<script type="text/javascript">
-			depend(['sticky'], function (sticky) {
-				
-				/*
-				 * Create elements for all the elements defined via HTML
-				 */
-				var els = document.querySelectorAll('*[data-sticky]');
-
-				for (var i = 0; i < els.length; i++) {
-					sticky.stick(els[i], sticky.context(els[i]), els[i].getAttribute('data-sticky'));
-				}
+			
+			/*
+			 * Load the applications into the sidebar
+			 */
+			depend(['m3/core/request'], function (Request) {
+				var request = new Request('<?= $sso->getEndpoint() ?>/appdrawer.json');
+				request
+					.then(JSON.parse)
+					.then(function (e) {
+						e.forEach(function (i) {
+							console.log(i)
+							var entry = document.createElement('div');
+							var link  = entry.appendChild(document.createElement('a'));
+							var icon  = link.appendChild(document.createElement('img'));
+							entry.className = 'menu-entry';
+							
+							link.href = i.url;
+							link.appendChild(document.createTextNode(i.name));
+							
+							icon.src = i.icon.m;
+							document.getElementById('appdrawer').appendChild(entry);
+						});
+					})
+					.catch(console.log);
 			});
 		</script>
 	</body>

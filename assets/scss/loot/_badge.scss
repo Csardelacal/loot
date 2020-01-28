@@ -1,0 +1,126 @@
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Aug 16, 2019, 4:01:07 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+
+.badge {
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 3px;
+	display: inline-block;
+	vertical-align: middle;
+	padding : .45rem 1.1rem;
+	
+	.icon-placeholder {
+		display: inline-block;
+		vertical-align: middle;
+		height: .7rem;
+		width: .7rem;
+		vertical-align: .05rem;
+		margin-right: .2rem;
+		border-radius: 50%;
+		border-width: 0px;
+		border-style: solid;
+		border-color: transparent;
+	}
+	
+	&.bronze {
+		border-color: #8F720A;
+		color: #8F720A;
+		background-color: #f7d8ba;
+		
+		.icon-placeholder {
+			border-color: #8F720A;
+			background: #8F720A;
+		}
+	}
+	
+	&.silver {
+		border-color: #797979;
+		color: #797979;
+		background-color: #f2f2f2;
+		
+		.icon-placeholder {
+			border-color: #989898;
+			background: #989898;
+		}
+	}
+	
+	&.gold {
+		border-color: #a67c00;
+		color: #a67c00;
+		background-color: #f7de92;
+		
+		.icon-placeholder {
+			border-color: #bf9b30;
+			background: #bf9b30;
+		}
+	}
+	
+	&.green {
+		border-color: #568A2E;
+		color: #568A2E;
+		background-color: #D0E9BC;
+		
+		.icon-placeholder {
+			border-color: #568A2E;
+			background: #568A2E;
+		}
+	}
+	
+	&.red {
+		border-color: #8A362E;
+		color: #8A362E;
+		background-color: #F9ACAC;
+		
+		.icon-placeholder {
+			border-color: #8A362E;
+			background: #8A362E;
+		}
+	}
+	
+	&.fluid {
+		display: block;
+		width: 100%;
+	}
+	
+	&.selectable {
+		cursor: pointer;
+		&:not(.selected) .icon-placeholder {
+			background: transparent;
+			border-width: 2px;
+		}
+	}
+	
+	&.selected {
+		font-weight: bold;
+	}
+	
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+}

@@ -1,7 +1,4 @@
-<?php
-
-use spitfire\Model;
-use spitfire\storage\database\Schema;
+<?php namespace loot;
 
 /* 
  * The MIT License
@@ -27,33 +24,20 @@ use spitfire\storage\database\Schema;
  * THE SOFTWARE.
  */
 
-class UserModel extends Model
+class ScoreFormatter
 {
 	
-	/**
-	 * 
-	 * @param Schema $schema
-	 * @return Schema
-	 */
-	public function definitions(Schema $schema) {
-		$schema->balanced = new IntegerField(true);
-		$schema->index($schema->balanced);
+	private static $scale = ['', 'k', 'm', 'b', 't', '<>'];
+	
+	public static function format($number) {
+		$c = 0;
+		
+		while ($number > 1000) {
+			$number = $number / 1000;
+			$c++;
+		}
+		
+		return number_format($number, 1) . self::$scale[$c];
 	}
 	
-	public function make(\auth\User$user) {
-		$record = db()->table('user')->newRecord();
-		$record->_id = $user->getId();
-		$record->store();
-		
-		db()->table('quest')->get('birthRight', true)->all()->each(function ($quest) use ($record) {
-			$badge = db()->table('badge')->newRecord();
-			$badge->user = $record;
-			$badge->quest = $quest;
-			$badge->expires = time() + $quest->ttl;
-			$badge->store();
-		});
-		
-		return $record;
-	}
-
 }
