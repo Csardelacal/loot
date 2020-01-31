@@ -8,8 +8,10 @@
 		<div class="material" style="min-height: 10rem;">
 			<div class="row l5">
 				<div class="span l1">
+					<?php if ($testimonial->client): ?>
 					<?php $client = $sso->getUser($testimonial->client->_id) ?>
 					<img src="<?= $client->getAvatar(256) ?>" style="width: 70%; border-radius: 50%" >
+					<?php endif; ?>
 				</div>
 				<div class="span l4">
 					<div class="row l4 ng">
@@ -20,8 +22,10 @@
 							</p>
 
 							<div class="spacer small"></div>
-							<?php if ($testimonial->recommendation): ?>
+							<?php if ($testimonial->recommendation  && $testimonial->client): ?>
 							<span style="color: #090"><?= $client->getUserName() ?></span>
+							<?php elseif ($testimonial->recommendation): ?>
+							<span style="color: #090">Client</span>
 							<?php else: ?>
 							<span style="color: #900">Client</span>
 							<?php endif; ?>

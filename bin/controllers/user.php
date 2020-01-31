@@ -45,7 +45,7 @@ class UserController extends PrivilegedController
 		$user = db()->table('user')->get('_id', $remote->getId())->first()? : UserModel::make($remote);
 		$badges = db()->table('badge')->get('user', $user)->where('expires', '>', time())->all();
 		
-		$testimonials = db()->table('testimonial')->get('user', $user)->range(0, 20);
+		$testimonials = db()->table('testimonial')->get('user', $user)->setOrder('created', 'DESC')->range(0, 20);
 		$positive = db()->table('testimonial')->get('user', $user)->where('recommendation', 1)->count() ;
 		$negative = db()->table('testimonial')->get('user', $user)->where('recommendation', 0)->count() ;
 		

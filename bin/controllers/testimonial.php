@@ -81,7 +81,7 @@ class TestimonialController extends PrivilegedController
 		if (!$profile) { throw new PublicException('Not found', 404); }
 		
 		$dbu = db()->table('user')->get('_id', $profile->getId())->first(true);
-		$query = db()->table('testimonial')->get('user', $dbu);
+		$query = db()->table('testimonial')->get('user', $dbu)->setOrder('created', 'DESC');
 		$pages = new \spitfire\storage\database\pagination\Paginator($query);
 		
 		$this->view->set('pages', $pages);
