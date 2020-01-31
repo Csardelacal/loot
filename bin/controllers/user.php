@@ -79,7 +79,7 @@ class UserController extends PrivilegedController
 		$this->view->set('score', $score);
 		$this->view->set('badges', $badges);
 		$this->view->set('testimonials', $testimonials);
-		$this->view->set('approval', $positive / ($positive + $negative));
+		$this->view->set('approval', ($positive + $negative) == 0? 0 : $positive / ($positive + $negative));
 	}
 	
 }
