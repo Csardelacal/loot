@@ -49,7 +49,7 @@ class RewardModel extends Model
 		
 		/*
 		 * This field indicates whether the score is awarded to the source, or the 
-		 * target of an interaction, or even both.
+		 * target of an interaction.
 		 */
 		$schema->awardTo = new IntegerField(true);
 		

@@ -29,6 +29,15 @@ use spitfire\storage\database\Schema;
 
 class QuestModel extends Model
 {
+	
+	/*
+	 * Give the user the option to award a reward to both the source and the target
+	 * of the interaction. This allows to define interactions that are mutually
+	 * beneficial for the user's scores, like comments or payments.
+	 */
+	const AWARDTO_SOURCE = 0x01;
+	const AWARDTO_TARGET = 0x02;
+	
 	/**
 	 * 
 	 * @param Schema $schema
@@ -41,6 +50,12 @@ class QuestModel extends Model
 		$schema->icon = new FileField();
 		$schema->name = new StringField(50);
 		$schema->description = new StringField(255);
+		
+		/*
+		 * This field indicates whether the badge is awarded to the source, or the 
+		 * target of an interaction.
+		 */
+		$schema->awardTo = new IntegerField(true);
 		
 		/*
 		 * The classname and count indicate the amount of activity with the given

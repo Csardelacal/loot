@@ -69,8 +69,8 @@ class QuestController extends PrivilegedController
 	/**
 	 * 
 	 * @validate >> POST#color(string required in[bronze, silver, gold, green, red])
-	 * @validate >> POST#name(string required length[3, 255])
-	 * @validate >> POST#description(string required length[3, 50])
+	 * @validate >> POST#name(string required length[3, 50])
+	 * @validate >> POST#description(string required length[3, 255])
 	 * @validate >> POST#activityName(string required length[3, 20])
 	 * @validate >> POST#threshold(number required)
 	 * @validate >> POST#ttl(number)
@@ -90,6 +90,7 @@ class QuestController extends PrivilegedController
 			$record->description = $_POST['description'];
 			$record->activityName = $_POST['activityName'];
 			$record->threshold = $_POST['threshold'];
+			$record->awardTo = $_POST['awardTo'];
 			$record->perValue = isset($_POST['perValue']);
 			$record->birthRight = isset($_POST['birthRight']);
 			$record->ttl = empty($_POST['ttl'])? null : $_POST['ttl'];

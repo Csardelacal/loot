@@ -59,22 +59,33 @@
 							<input type="text" class="frm-ctrl fixed-width narrow" name="threshold" id="amt" placeholder="Amount" value="<?= __($record? $record->threshold : '') ?>">
 						</div>
 						
-						<label class="frm-lbl" for="name">Expire after</label>
-						<select class="frm-ctrl" name="ttl">
-							<option value="86400">One day</option>
-							<option value="604800">One week</option>
-							<option value="2592000">One Month</option>
-							<option value="7776000">Three Months</option>
-							<option value="15552000">Six Months</option>
-							<option value="31536000">One year</option>
-							<option value="63072000">Two years</option>
-						</select>
+						<div class="row l2 ng-lr">
+							<div class="span l1">
+								<label class="frm-lbl" for="name">Expire after</label>
+								<select class="frm-ctrl" name="ttl">
+									<option value="86400">One day</option>
+									<option value="604800">One week</option>
+									<option value="2592000">One Month</option>
+									<option value="7776000">Three Months</option>
+									<option value="15552000">Six Months</option>
+									<option value="31536000">One year</option>
+									<option value="63072000">Two years</option>
+								</select>
+							</div>
+							<div class="span l1">
+								<label class="frm-lbl" for="name">Award to</label>
+								<select class="frm-ctrl" name="awardTo">
+									<option value="<?= QuestModel::AWARDTO_TARGET ?>" <?= __($record && $record->awardTo == QuestModel::AWARDTO_TARGET? 'selected' : '') ?>>Target</option>
+									<option value="<?= QuestModel::AWARDTO_SOURCE ?>" <?= __($record && $record->awardTo == QuestModel::AWARDTO_SOURCE? 'selected' : '') ?>>Source</option>
+								</select>
+							</div>
+						</div>
 						
 						<div class="spacer small"></div>
 						
 						<label class="frm-lbl">
 							<input class="frm-ctrl" name="perValue" type="checkbox" <?= $record && $record->perValue? 'checked' : '' ?>>
-							<span class="frm-ctrl-chk toggle"></span>
+							<span class="frm-ctrl-chk"></span>
 							Grant reward for the interaction value rather than count 
 						</label>
 						

@@ -44,7 +44,7 @@ class InteractionDirector extends Director
 		 * 
 		 * TODO: It would be better if the limit was configurable.
 		 */
-		$pending = db()->table('interaction')->get('processed', null)->range(0, 20000);
+		$pending = db()->table('interaction')->get('processed', null)->range(0, 1000);
 		
 		/*
 		 * Loop over each interaction that has not yet been processed.
@@ -58,12 +58,16 @@ class InteractionDirector extends Director
 			$quests = db()->table('quest')->get('activityName', $interaction->name)->all();
 			
 			foreach ($quests as $quest) {
+				
+				$field = $quest->awardTo === QuestModel::AWARDTO_TARGET? 'tgt' : 'src';
+				$user  = $quest->awardTo === QuestModel::AWARDTO_TARGET? $interaction->tgt : $interaction->src;
+				
 				/*
 				 * Find previous interactions that match the activity name. This way we can
 				 * determine whether the user has the necessary interactions to receive
 				 * a badge.
 				 */
-				$query = db()->table('interaction')->get('name', $quest->activityName)->where('tgt', $interaction->tgt);
+				$query = db()->table('interaction')->get('name', $quest->activityName)->where($field, $user);
 				if ($quest->ttl) { $query->where('created', '>', time() - $quest->ttl); }
 				
 				$query->setOrder('created', 'DESC');
@@ -103,7 +107,7 @@ class InteractionDirector extends Director
 				 */
 				else {
 					$achieved = $previous->count() >= $quest->threshold;
-					$last = $previous->has($quest->threshold)? $previous[$quest->threshold] : null;
+					$last = $previous->has($quest->threshold - 1)? $previous[$quest->threshold - 1] : null;
 				}
 				
 				/*
@@ -112,9 +116,9 @@ class InteractionDirector extends Director
 				 * and provided to users who wish to know whether the user is reputable.
 				 */
 				if ($achieved) {
-					$badge = db()->table('badge')->get('user', $interaction->tgt)->where('quest', $quest)->first()?: db()->table('badge')->newRecord();
+					$badge = db()->table('badge')->get('user', $user)->where('quest', $quest)->first()?: db()->table('badge')->newRecord();
 					$badge->quest   = $quest;
-					$badge->user    = $interaction->tgt;
+					$badge->user    = $user;
 					$badge->expires = $last->created + $quest->ttl;
 					$badge->store();
 				}
