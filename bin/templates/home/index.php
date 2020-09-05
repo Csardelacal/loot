@@ -60,14 +60,15 @@
 <div class="row l1">
 	<div class="span l1">
 		<div class="material" style="min-height: 10rem;">
-			<div class="row l5">
-				<div class="span l1">
+			<div class="row l6">
+				<div class="span l1 align-center">
+					<?php $seller = $sso->getUser($testimonial->user->_id) ?>
 					<?php if ($testimonial->client): ?>
 					<?php $client = $sso->getUser($testimonial->client->_id) ?>
-					<img src="<?= $client->getAvatar(256) ?>" style="width: 70%; border-radius: 50%" >
+					<img src="<?= $client->getAvatar(256) ?>" style="width: 90%; border-radius: 50%" >
 					<?php endif; ?>
 				</div>
-				<div class="span l4">
+				<div class="span l5">
 					<div class="row l4 ng">
 						<div class="span l3">
 							<div class="spacer small"></div>
@@ -85,16 +86,35 @@
 							<?php endif; ?>
 							<span class="text:grey-800">on</span>
 							<span class="text:grey-500"><?= Strings::strToHTML($testimonial->product) ?></span>
+							
+							<div class="spacer large"></div>
 						</div>
-						<div class="span l1 align-right">
+						<div class="span l1 align-right desktop-only">
 							<div class="spacer small"></div>
 							<span class="text:grey-800"><?= Time::relative($testimonial->created) ?></span>
 						</div>
 					</div>
-						
-					<div class="spacer medium"></div>
+					
 				</div>
 			</div>
+			<?php if ($testimonial->response): ?>
+			<div class="row l6">
+				<div class="span l1 align-center desktop-only">
+					<img src="<?= $seller->getAvatar(256) ?>" style="width: 70%; border-radius: 50%" >
+				</div>
+				<div class="span l4">
+					<div class="spacer small"></div>
+					<div class="text:grey-300"><?= __($testimonial->response) ?></div>
+					<div class="text:grey-500"><?= __($seller->getUsername()) ?></div>
+				</div>
+			</div>
+			<?php else : ?>
+			<div class="align-center">
+				<a class="button small outline" href="<?= url('testimonial', 'reply', $testimonial->_id) ?>">Reply to this testimonial</a>
+			</div>
+			<?php endif; ?>
+
+			<div class="spacer medium"></div>
 		</div>
 	</div>
 </div>

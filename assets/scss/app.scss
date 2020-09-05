@@ -26,15 +26,15 @@ THE SOFTWARE.
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
 
+@import 'loot/_color.scss';
 @import '_/_.scss';
 @import 'loot/_badge.scss';
-@import 'loot/_color.scss';
 @import 'loot/_text.scss';
 @import 'loot/_pagination.scss';
 @import 'ui/_dropdown.scss';
 
 html {
-	background-color: #eef1f6;
+	background-color: #FAFAFA;
 	color: $grey100;
 }
 
@@ -42,22 +42,44 @@ h2 {
 	color: $grey400;
 }
 
+a {
+	color: $blue500;
+	text-decoration: none;
+}
+
 .material {
 	background: #FFF;
-	border-radius: 2px;
-	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.15), -1px -1px 5px rgba(0, 0, 0, 0.07);
+	border-radius: .4rem;
+	border: solid 1px $grey800;
+	//box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.13), -1px -1px 5px rgba(0, 0, 5, 0.07);
 	padding: 2rem 3rem;
 	
 	&.unpadded {
-		padding: 0px;
+		padding: 0;
+	}
+	
+	&.less-padded {
+		padding: 1rem 1.5rem;
+	}
+	
+	&.rounded {
+		border-radius: .6rem;
+	}
+	
+	&.unshaded {
+		box-shadow: none;
+	}
+	
+	&.bordered {
+		border: .1rem solid $grey600;
+		
+		&.active {
+			border: .075rem solid $purple300;
+		}
 	}
 	
 	.padded {
-		padding:  2rem 3rem;
-		
-		&.a-little {
-			padding: 1rem 3rem;
-		}
+		padding: 20px 15px 15px;
 	}
 	
 	.darkened {
@@ -124,4 +146,12 @@ footer {
 	&.right .badge {
 		right: 0;
 	}
+}
+
+blockquote
+{
+	padding: .7rem 1rem;
+	font-style: italic;
+	border-left: solid 2px $grey500;
+	color: $grey300;
 }

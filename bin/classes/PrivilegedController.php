@@ -41,7 +41,7 @@ class PrivilegedController extends BaseController
 		 */
 		$memcached = new \spitfire\cache\MemcachedAdapter();
 		
-		$this->isPrivileged = $memcached->get('is_adiministrative_user' . $this->user->id, function () {
+		$this->isPrivileged = $this->user && $memcached->get('is_administrative_user' . $this->user->id, function () {
 			/*
 			 * Fetch the group (and it's member list) that contains the administrative
 			 * members for the system.

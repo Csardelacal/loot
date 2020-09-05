@@ -35,6 +35,30 @@ $grey600: #8D99A3;
 $grey700: #A9B3B9;
 $grey800: #C1C8CD;
 $grey900: #E6E8EA;
+$grey950: #F1F2F3;
+
+$white   : #FFFFFF;
+
+$green100: #356808;
+$green300: #63B618;
+$green500: #8ADE40;
+$green700: #B5F47D;
+$green900: #E8FCD7;
+
+$red100 : #601B1B;
+$red300 : #B22929;
+$red500 : #C93D3D;
+$red700 : #D87171;
+$red900 : #E8ADAD;
+
+$blue100 : #163348;
+$blue300 : #245375;
+$blue500 : #2F6D9A;
+$blue700 : #3B89C1;
+$blue800 : #6DA7D2;
+$blue900 : #AFCFE6;
+
+$purple300: #396afc;
 
 $colors : (
 	"grey-100": $grey100, 
@@ -45,4 +69,35 @@ $colors : (
 	"grey-600": $grey600, 
 	"grey-700": $grey700, 
 	"grey-800": $grey800, 
-	"grey-900": $grey900);
+	"grey-900": $grey900,
+	
+	"white"     : $white,
+	
+	"green-100" : $green100,
+	"green-300" : $green300,
+	"green-500" : $green500,
+	"green-700" : $green700,
+	"green-900" : $green900,
+	
+	"red-100" : $red100,
+	"red-300" : $red300,
+	"red-500" : $red500,
+	"red-700" : $red700,
+	"red-900" : $red900,
+	
+	"blue-100" : $blue100,
+	"blue-300" : $blue300,
+	"blue-500" : $blue500,
+	"blue-700" : $blue700,
+	"blue-800" : $blue800,
+	"blue-900" : $blue900,
+	
+	"purple-300" : $purple300
+);
+
+
+$activeStateBorder: $purple300;
+$activeStateBackground: $white;
+
+$inactiveStateBorder: $blue500;
+$inactiveStateBackground: $white;
