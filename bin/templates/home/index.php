@@ -149,7 +149,7 @@
 							<?php endif; ?>
 
 							<span style="display: inline-block; width: 7px"></span>
-							<span class="text:grey-500">Someone</span>
+							<span class="text:grey-500"><?= __($change->interaction->src? $sso->getUser($change->interaction->src->_id)->getUsername() : "A guest") ?></span>
 							<span class="text:grey-400"><?= __($change->interaction->caption) ?></span>
 						</div>
 						<div class="span l1 align-right">

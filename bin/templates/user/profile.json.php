@@ -37,6 +37,12 @@ echo json_encode([
 		'score' => $score,
 		'approval' => $approval,
 		'badges' => collect($badges)->each(function ($e) { return [ 'id' => $e->quest->_id, 'name' => $e->quest->name, 'color' => $e->quest->color ]; })->toArray(),
-		'testimonials' => collect($testimonials)->each(function ($e) { return [ 'id' => $e->_id, 'from' => $e->client->_id, 'recommendation' => $e->recommendation, 'body' => $e->body ]; })->toArray()
+		'testimonials' => collect($testimonials)->each(function ($e) use ($sso) { return [
+			'id' => $e->_id, 
+			'from' => [ 'id' => $e->client->_id, 'username' => $sso->getUser($e->client->_id)->getUsername(), 'avatar' => $sso->getUser($e->client->_id)->getAvatar(256)], 
+			'recommendation' => $e->recommendation, 
+			'created' => $e->created,
+			 'body' => $e->body 
+		]; })->toArray()
 	]
 ]);
