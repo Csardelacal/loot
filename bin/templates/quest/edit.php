@@ -62,14 +62,20 @@
 						<div class="row l2 ng-lr">
 							<div class="span l1">
 								<label class="frm-lbl" for="name">Expire after</label>
+								<?php $expirations = [
+									86400 => 'One day',
+									604800 => 'One month',
+									7776000 => 'Three months',
+									15552000 => 'Six months',
+									31536000 => 'One year',
+									63072000 => 'Two years'
+								]; ?>
 								<select class="frm-ctrl" name="ttl">
-									<option value="86400">One day</option>
-									<option value="604800">One week</option>
-									<option value="2592000">One Month</option>
-									<option value="7776000">Three Months</option>
-									<option value="15552000">Six Months</option>
-									<option value="31536000">One year</option>
-									<option value="63072000">Two years</option>
+								<?php foreach ($expirations as $ttl => $caption) : ?>
+									<option value="<?= strval($ttl) ?>" <?= $record && $record->ttl === $ttl? 'selected' : '' ?>>
+										<?= __($caption) ?>
+									</option>
+								<?php endforeach; ?>
 								</select>
 							</div>
 							<div class="span l1">
