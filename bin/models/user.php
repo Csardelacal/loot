@@ -1,5 +1,6 @@
 <?php
 
+use spitfire\exceptions\PublicException;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
@@ -37,10 +38,16 @@ class UserModel extends Model
 	 */
 	public function definitions(Schema $schema) {
 		$schema->balanced = new IntegerField(true);
+		$schema->created  = new IntegerField(true);
 		$schema->index($schema->balanced);
 	}
 	
 	public function make(\auth\User$user) {
+		
+		if (!$user->getId()) {
+			throw new PublicException('Received invalid user', 500);
+		}
+		
 		$record = db()->table('user')->newRecord();
 		$record->_id = $user->getId();
 		$record->store();
@@ -54,6 +61,11 @@ class UserModel extends Model
 		});
 		
 		return $record;
+	}
+	
+	public function onbeforesave()
+	{
+		if ($this->created) { $this->created = time(); }
 	}
 
 }
