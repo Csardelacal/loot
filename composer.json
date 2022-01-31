@@ -17,9 +17,20 @@
 		],
 		"baseline" : [
 			"./vendor/bin/phpstan analyse bin --level 5 --generate-baseline"
-		]
+		],
+		"sniff":
+			"./vendor/bin/phpcs --encoding=utf-8 -n -p $(git diff --diff-filter=d --cached --name-only | grep -E '\\.php$')"
 	},
     "require-dev": {
-        "phpstan/phpstan": "^0.12.82"
-    }
+        "phpstan/phpstan": "^0.12.82",
+        "squizlabs/php_codesniffer": "dev-dev/scope-indent-blank-lines"
+    },
+
+	"repositories":
+	[
+			{
+				"type": "vcs",
+				"url": "https://github.com/Csardelacal/PHP_Codesniffer"
+			}
+	]
 }
