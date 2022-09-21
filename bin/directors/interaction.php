@@ -37,6 +37,12 @@ class InteractionDirector extends Director
 	 * @throws PrivateException If a database error occurred.
 	 */
 	public function process() {
+		
+		$file = spitfire()->getCWD() . '/bin/usr/.interaction.cron.sem';
+		$fh = fopen($file, file_exists($file)? 'r' : 'w+');
+		flock($fh, LOCK_EX);
+		echo 'Locked!';
+		
 		/*
 		 * Select all interactions that have not yet been processed. We limit this
 		 * query to prevent the system from being overwhelmed by really high spikes
@@ -87,6 +93,7 @@ class InteractionDirector extends Director
 				 * the application loops over all the items until the value it expects
 				 * is satisfied.
 				 */
+				
 				if ($quest->perValue) {
 					$sum = 0;
 					$achieved = false;
